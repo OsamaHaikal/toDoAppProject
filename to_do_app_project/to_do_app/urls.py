@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from toDo import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
-
+    # Auth 
+    path('signup/',views.signUpUser , name='signupuser')
+    #to dos
 ]
