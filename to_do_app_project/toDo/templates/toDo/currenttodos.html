@@ -7,9 +7,11 @@
             
         <b>
             {% endif %} 
+            <a href="{% url 'viewtodo' todo.id %}">
+
             {{ todo.title }}
             {% if todo.important %}
-            
+            <a href="{% url 'viewtodo' todo.id %}">
         </b>
                 {% endif %}
 
@@ -17,10 +19,9 @@
                     - {{todo.memo}}
                 {% endif %}
 
+            </a>
 
     </li>
-
-
 
     {% endfor %}
 </ul>

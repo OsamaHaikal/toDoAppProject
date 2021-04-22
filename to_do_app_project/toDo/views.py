@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect ,get_object_or_404
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth import login,logout , authenticate
 from .forms import ToDoForm
 from .models import ToDo
+
 
 # Create your views here.
 
@@ -72,3 +73,27 @@ def logOutUser(request):
     if request.method=="POST":
         logout(request)
         return redirect('home')
+
+
+def viewtodo(request, todo_pk):
+    todo = get_object_or_404(ToDo,pk=todo_pk,user=request.user) # get to do , get id , get the user belongs to this
+    if request.method == 'GET':
+        
+        form = ToDoForm(instance = todo)
+    
+        return render(request, 'toDo/viewtodo.html', {'todo': todo, 'form':form})
+
+    else:
+        try:
+            form = ToDoForm(request.POST,instance =todo)
+            form.save()
+            return redirect('currenttodos')
+        except ValueError:
+            return render(request, 'todo/viewtodo.html', {'todo': todo,
+                                                          'form':form, 
+                                                          'error': 'Bad data passed in. Try again.'
+                                                          
+                                                          }
+                          )
+
+            
