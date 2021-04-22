@@ -3,6 +3,8 @@ from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth import login,logout , authenticate
+from .forms import ToDoForm
+
 # Create your views here.
 
 def home(request):
@@ -29,8 +31,29 @@ def signUpUser(request):
             return render(request,'toDo/signupuser.html',{'form':UserCreationForm(),'error':"Passwords did not match"})
         
         
+def createToDo(request):
+    if request.method == 'GET':
+        return render(request, 'todo/createtodo.html', {'form': ToDoForm()})
+    else:
+        try:
+            form = ToDoForm(request.POST)
+            newtodo = form.save(commit=False)
+            newtodo.user = request.user
+            newtodo.save()
+            return redirect('currenttodos')
+        except ValueError:
+            return render(request, 'todo/createtodo.html', {'form': ToDoForm(), 'error': 'Bad data passed in. Try again.'})
+        
+        
+    
+
+    
+    
+
 def currenttodos(request):
     return render(request, 'toDo/currenttodos.html')
+
+
      
 def logInUser(request):
     if request.method == "GET":
