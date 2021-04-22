@@ -5,6 +5,7 @@ from django.db import IntegrityError
 from django.contrib.auth import login,logout , authenticate
 from .forms import ToDoForm
 from .models import ToDo
+from django.utils import timezone
 
 
 # Create your views here.
@@ -97,3 +98,18 @@ def viewtodo(request, todo_pk):
                           )
 
             
+def completetodo(request, todo_pk):
+    # get to do , get id , get the user belongs to this
+    todo = get_object_or_404(ToDo, pk=todo_pk, user=request.user)
+    if request.method =='POST':
+        todo.date_completed =timezone.now()
+        todo.save()
+        return redirect('currenttodos')
+        
+        
+def deletetetodo(request, todo_pk):
+    # get to do , get id , get the user belongs to this
+    todo = get_object_or_404(ToDo, pk=todo_pk, user=request.user)
+    if request.method =='POST':
+        todo.delete()
+        return redirect('currenttodos')
