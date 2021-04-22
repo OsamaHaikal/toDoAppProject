@@ -2,8 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.db import IntegrityError
-from django.contrib.auth import login
+from django.contrib.auth import login,logout
 # Create your views here.
+
+def home(request):
+    return render(request,'toDo/home.html')
+    
 def signUpUser(request):
     if request.method == "GET":
         return render(request,'toDo/signupuser.html',{'form':UserCreationForm()})
@@ -28,3 +32,7 @@ def signUpUser(request):
 def currenttodos(request):
     return render(request, 'toDo/currenttodos.html')
      
+def logOutUser(request):
+    if request.method=="POST":
+        logout(request)
+        return redirect('home')
