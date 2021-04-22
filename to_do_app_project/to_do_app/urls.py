@@ -28,7 +28,9 @@ urlpatterns = [
 
     #to dos
     path('create/',views.createToDo , name='createtodo'),
-    path('current/',views.currenttodos , name='currenttodos')
+    path('current/',views.currenttodos , name='currenttodos'),
+    path('todo/<int:todo_pk>/',views.viewtodo , name='viewtodo')
+
 
 
 ]
