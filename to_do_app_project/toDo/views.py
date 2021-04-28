@@ -6,6 +6,7 @@ from django.contrib.auth import login,logout , authenticate
 from .forms import ToDoForm
 from .models import ToDo
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
@@ -46,12 +47,13 @@ def logInUser(request):
             login(request,user)
             return redirect('currenttodos')
              
-                 
+@login_required          
 def logOutUser(request):
     if request.method=="POST":
         logout(request)
         return redirect('home')
 
+@login_required          
 
 def createToDo(request):
     if request.method == 'GET':
@@ -66,10 +68,12 @@ def createToDo(request):
         except ValueError:
             return render(request, 'todo/createtodo.html', {'form': ToDoForm(), 'error': 'Bad data passed in. Try again.'})
 
+@login_required          
 
 def currenttodos(request):
     todos = ToDo.objects.filter(user=request.user, date_completed__isnull=True)
     return render(request, 'toDo/currenttodos.html', {'todos': todos})
+@login_required          
 
 
 def viewtodo(request, todo_pk):
@@ -93,7 +97,9 @@ def viewtodo(request, todo_pk):
                                                           }
                           )
 
-            
+
+@login_required
+
 def completetodo(request, todo_pk):
     # get to do , get id , get the user belongs to this
     todo = get_object_or_404(ToDo, pk=todo_pk, user=request.user)
@@ -102,8 +108,16 @@ def completetodo(request, todo_pk):
         todo.save()
         return redirect('currenttodos')
         
-        
-def deletetetodo(request, todo_pk):
+@login_required
+
+def completedtodos(request):
+    todos = ToDo.objects.filter(user=request.user, date_completed__isnull=False).order_by('date_completed')
+    return render(request, 'toDo/completedtodos.html', {'todos': todos})
+
+
+@login_required
+
+def deletetodo(request, todo_pk):
     # get to do , get id , get the user belongs to this
     todo = get_object_or_404(ToDo, pk=todo_pk, user=request.user)
     if request.method =='POST':
