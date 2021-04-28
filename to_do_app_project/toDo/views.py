@@ -33,27 +33,6 @@ def signUpUser(request):
             #if passwords didint match
             return render(request,'toDo/signupuser.html',{'form':UserCreationForm(),'error':"Passwords did not match"})
         
-        
-def createToDo(request):
-    if request.method == 'GET':
-        return render(request, 'todo/createtodo.html', {'form': ToDoForm()})
-    else:
-        try:
-            form = ToDoForm(request.POST)
-            newtodo = form.save(commit=False)
-            newtodo.user = request.user
-            newtodo.save()
-            return redirect('currenttodos')
-        except ValueError:
-            return render(request, 'todo/createtodo.html', {'form': ToDoForm(), 'error': 'Bad data passed in. Try again.'})
-        
-        
-    
-def currenttodos(request):
-    todos=ToDo.objects.filter(user=request.user,date_completed__isnull=True)
-    return render(request, 'toDo/currenttodos.html',{'todos':todos})
-
-
      
 def logInUser(request):
     if request.method == "GET":
@@ -67,13 +46,30 @@ def logInUser(request):
             login(request,user)
             return redirect('currenttodos')
              
-        
-
-         
+                 
 def logOutUser(request):
     if request.method=="POST":
         logout(request)
         return redirect('home')
+
+
+def createToDo(request):
+    if request.method == 'GET':
+        return render(request, 'todo/createtodo.html', {'form': ToDoForm()})
+    else:
+        try:
+            form = ToDoForm(request.POST)
+            newtodo = form.save(commit=False)
+            newtodo.user = request.user
+            newtodo.save()
+            return redirect('currenttodos')
+        except ValueError:
+            return render(request, 'todo/createtodo.html', {'form': ToDoForm(), 'error': 'Bad data passed in. Try again.'})
+
+
+def currenttodos(request):
+    todos = ToDo.objects.filter(user=request.user, date_completed__isnull=True)
+    return render(request, 'toDo/currenttodos.html', {'todos': todos})
 
 
 def viewtodo(request, todo_pk):
